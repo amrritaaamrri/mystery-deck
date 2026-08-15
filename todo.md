@@ -1,0 +1,13 @@
+- [x] Confirm the intended replacement name for “Arcana Match.”
+- [x] Define easy, standard, and expert board sizes with appropriate countdown limits.
+- [x] Extend the game controller for variable decks, countdown state, completion, and timeout.
+- [x] Add card-flip, successful-match, and completion sound effects that unlock after player interaction.
+- [x] Store and display personal best scores for each difficulty in local storage.
+- [x] Update the interface, title, labels, and documentation for the confirmed new name.
+- [x] Verify each difficulty, timer behavior, audio triggers, persisted records, desktop/mobile layout, type checks, and production build.
+- [x] Choose a new game title that preserves the ornate tarot identity.
+- [x] Confirm the final public title as “Mystery Deck.”
+- [x] Write a system-by-system code guide that points to the gameplay, visuals, audio, persistence, and UI modules.
+- [ ] Save a release checkpoint and prepare the project for export through the GitHub management panel.
+- [x] Ensure the repository includes the complete client source, gameplay modules, style files, documentation, and project configuration for code browsing on GitHub.
+- [ ] Export the final release to the user’s GitHub account and provide the repository URL.

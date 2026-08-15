@@ -1,5 +1,6 @@
 /**
- * Arcana Match design contract: a Gilded Reliquary reading-table composition with a dominant card spread.
+ * Mystery Deck design contract: a Gilded Reliquary reading-table composition
+ * that keeps the card spread dominant while presenting challenge tools as a quiet ledger.
  */
 
 import { useEffect, useRef, useState, type CSSProperties } from "react";
@@ -14,11 +15,25 @@ import {
   Sparkles,
   Star,
   Sun,
+  TimerReset,
+  Trophy,
+  Volume2,
+  VolumeX,
   type LucideIcon,
 } from "lucide-react";
 import { MemoryGame } from "@/game/memoryGame";
+import { loadBestScores, saveBestScore } from "@/game/scores";
+import { RitualSoundscape, type RitualSound } from "@/game/sound";
 import { createGameScene, type GameHandle } from "@/game/scene";
-import type { ArcanaName, ArcanaSymbol, GameSnapshot } from "@/game/types";
+import {
+  DIFFICULTIES,
+  DIFFICULTY_ORDER,
+  type ArcanaName,
+  type ArcanaSymbol,
+  type BestScoreMap,
+  type DifficultyId,
+  type GameSnapshot,
+} from "@/game/types";
 
 const LOGO_URL = "/manus-storage/arcana-logo_f857af6e.png";
 const CARD_BACK_URL = "/manus-storage/arcana-tarot-back_d280492e.png";
@@ -35,12 +50,20 @@ const iconByArcana: Record<ArcanaName, LucideIcon> = {
   Serpent: Orbit,
 };
 
-function statusMessage(snapshot: GameSnapshot) {
+function formatTime(totalSeconds: number) {
+  const minutes = Math.floor(Math.max(0, totalSeconds) / 60);
+  const seconds = Math.max(0, totalSeconds) % 60;
+  return `${minutes}:${String(seconds).padStart(2, "0")}`;
+}
+
+function statusMessage(snapshot: GameSnapshot, remainingSeconds: number) {
+  if (snapshot.phase === "timed-out") return "The sandglass has emptied. Lay a new spread to continue.";
   if (snapshot.phase === "complete") return `The constellation is complete in ${snapshot.moves} moves.`;
-  if (snapshot.phase === "resolving") return "The arcana do not answer together.";
+  if (snapshot.phase === "resolving") return "The symbols do not answer together.";
   if (snapshot.phase === "one-selected") return "One card is listening. Turn another.";
+  if (remainingSeconds <= 15) return "The last grains fall. Trust the first pattern you saw.";
   if (snapshot.matchedPairs > 0) return `${snapshot.matchedPairs} pairs have joined the reading.`;
-  return "Turn two hidden arcana to begin the reading.";
+  return "Turn two hidden cards before the sandglass empties.";
 }
 
 function CardFace({ symbol }: { symbol: ArcanaSymbol }) {
@@ -109,11 +132,24 @@ export default function GameCanvas() {
   const startedRef = useRef(false);
   const isDemoRef = useRef(new URLSearchParams(window.location.search).has("demo"));
   const gameRef = useRef<MemoryGame | null>(null);
+  const soundsRef = useRef<RitualSoundscape | null>(null);
+  const recordedRoundRef = useRef(0);
+
   if (!gameRef.current) {
-    gameRef.current = new MemoryGame(undefined, isDemoRef.current ? 143 : undefined);
+    gameRef.current = new MemoryGame(undefined, "oracle", isDemoRef.current ? 143 : undefined);
   }
+  if (!soundsRef.current) soundsRef.current = new RitualSoundscape();
+
   const game = gameRef.current;
+  const sounds = soundsRef.current;
   const [snapshot, setSnapshot] = useState<GameSnapshot>(() => game.getSnapshot());
+  const [remainingSeconds, setRemainingSeconds] = useState(() => game.getSnapshot().difficulty.timeLimitSeconds);
+  const [bestScores, setBestScores] = useState<BestScoreMap>(() => loadBestScores());
+  const [isMuted, setIsMuted] = useState(false);
+  const [isNewRecord, setIsNewRecord] = useState(false);
+
+  const elapsedSeconds = snapshot.difficulty.timeLimitSeconds - remainingSeconds;
+  const activeRecord = bestScores[snapshot.difficulty.id];
 
   useEffect(() => {
     game.setListener(setSnapshot);
@@ -142,11 +178,10 @@ export default function GameCanvas() {
         handle = sceneHandle;
         engine.runRenderLoop(() => sceneHandle.scene.render());
       })
-      .catch((error) => console.error("Unable to create Arcana Match scene", error));
+      .catch((error) => console.error("Unable to create Mystery Deck scene", error));
 
     const onResize = () => engine.resize();
     window.addEventListener("resize", onResize);
-
     return () => {
       cancelled = true;
       window.removeEventListener("resize", onResize);
@@ -162,9 +197,66 @@ export default function GameCanvas() {
     return () => window.clearInterval(demoTimer);
   }, [game]);
 
-  useEffect(() => () => game.dispose(), [game]);
+  useEffect(() => {
+    setRemainingSeconds(snapshot.difficulty.timeLimitSeconds);
+    setIsNewRecord(false);
+  }, [snapshot.roundId, snapshot.difficulty.timeLimitSeconds]);
 
-  const isBlocked = snapshot.phase === "resolving" || snapshot.phase === "complete";
+  useEffect(() => {
+    if (isDemoRef.current || snapshot.phase === "complete" || snapshot.phase === "timed-out") return;
+    if (remainingSeconds <= 0) {
+      game.expire();
+      return;
+    }
+    const timer = window.setTimeout(() => setRemainingSeconds((seconds) => seconds - 1), 1000);
+    return () => window.clearTimeout(timer);
+  }, [game, remainingSeconds, snapshot.phase]);
+
+  useEffect(() => {
+    if (snapshot.phase !== "complete" || recordedRoundRef.current === snapshot.roundId) return;
+    recordedRoundRef.current = snapshot.roundId;
+    const score = {
+      moves: snapshot.moves,
+      seconds: elapsedSeconds,
+      completedAt: new Date().toISOString(),
+    };
+    const result = saveBestScore(snapshot.difficulty.id, score);
+    setBestScores(result.scores);
+    setIsNewRecord(result.isNewRecord);
+  }, [elapsedSeconds, snapshot.difficulty.id, snapshot.moves, snapshot.phase, snapshot.roundId]);
+
+  useEffect(() => () => {
+    game.dispose();
+    sounds.dispose();
+  }, [game, sounds]);
+
+  const isBlocked =
+    snapshot.phase === "resolving" || snapshot.phase === "complete" || snapshot.phase === "timed-out";
+
+  const play = (sound: RitualSound) => sounds.play(sound);
+
+  const selectCard = (cardId: string) => {
+    const event = game.selectCard(cardId);
+    if (event === "flip") play("flip");
+    if (event === "match") play("match");
+    if (event === "complete") {
+      play("match");
+      play("complete");
+    }
+  };
+
+  const layNewSpread = (difficultyId: DifficultyId = snapshot.difficulty.id) => {
+    game.restart(difficultyId);
+  };
+
+  const toggleSound = () => {
+    const nextMuted = !isMuted;
+    sounds.setMuted(nextMuted);
+    setIsMuted(nextMuted);
+    if (!nextMuted) play("flip");
+  };
+
+  const hasEnded = snapshot.phase === "complete" || snapshot.phase === "timed-out";
 
   return (
     <main className="arcana-shell">
@@ -172,35 +264,88 @@ export default function GameCanvas() {
       <div className="arcana-grain" aria-hidden="true" />
 
       <header className="arcana-header">
-        <div className="brand-bookplate">
-          <img src={LOGO_URL} alt="Arcana Match crescent and star emblem" className="brand-bookplate__crest" />
-          <div>
-            <p className="brand-bookplate__kicker">A memory reading in eight pairs</p>
-            <h1>Arcana Match</h1>
+        <div className="header-row">
+          <div className="brand-bookplate">
+            <img src={LOGO_URL} alt="Mystery Deck crescent and star emblem" className="brand-bookplate__crest" />
+            <div>
+              <p className="brand-bookplate__kicker">A timed memory reading</p>
+              <h1>Mystery Deck</h1>
+            </div>
+          </div>
+
+          <div className="score-ledger" aria-label="Game progress">
+            <div className="score-ledger__item score-ledger__item--timer">
+              <span>Sand</span>
+              <strong className={remainingSeconds <= 15 ? "is-urgent" : ""}>{formatTime(remainingSeconds)}</strong>
+            </div>
+            <span className="score-ledger__separator" aria-hidden="true" />
+            <div className="score-ledger__item">
+              <span>Moves</span>
+              <strong>{String(snapshot.moves).padStart(2, "0")}</strong>
+            </div>
+            <span className="score-ledger__separator" aria-hidden="true" />
+            <div className="score-ledger__item">
+              <span>Pairs</span>
+              <strong>{String(snapshot.matchedPairs).padStart(2, "0")}<em>/{String(snapshot.difficulty.pairs).padStart(2, "0")}</em></strong>
+            </div>
           </div>
         </div>
 
-        <div className="score-ledger" aria-label="Game progress">
-          <div className="score-ledger__item">
-            <span>Moves</span>
-            <strong>{String(snapshot.moves).padStart(2, "0")}</strong>
+        <div className="challenge-rail" aria-label="Reading difficulty and personal record">
+          <div className="difficulty-cluster">
+            <span className="challenge-rail__label">Choose a reading</span>
+            <div className="difficulty-tabs" role="group" aria-label="Difficulty level">
+              {DIFFICULTY_ORDER.map((difficultyId) => {
+                const difficulty = DIFFICULTIES[difficultyId];
+                return (
+                  <button
+                    key={difficulty.id}
+                    type="button"
+                    className={`difficulty-tab ${snapshot.difficulty.id === difficulty.id ? "is-active" : ""}`}
+                    onClick={() => layNewSpread(difficulty.id)}
+                    aria-pressed={snapshot.difficulty.id === difficulty.id}
+                    title={difficulty.description}
+                  >
+                    {difficulty.label}
+                  </button>
+                );
+              })}
+            </div>
           </div>
-          <span className="score-ledger__separator" aria-hidden="true" />
-          <div className="score-ledger__item">
-            <span>Pairs</span>
-            <strong>{String(snapshot.matchedPairs).padStart(2, "0")}<em>/08</em></strong>
+
+          <p className="difficulty-description">{snapshot.difficulty.description}</p>
+
+          <div className="record-ledger" aria-label="Personal record for selected difficulty">
+            <Trophy size={13} strokeWidth={1.45} aria-hidden="true" />
+            <span>Best</span>
+            <strong>{activeRecord ? `${activeRecord.moves} moves · ${formatTime(activeRecord.seconds)}` : "Awaiting a reading"}</strong>
           </div>
+
+          <button
+            type="button"
+            className="sound-button"
+            onClick={toggleSound}
+            aria-pressed={!isMuted}
+            aria-label={isMuted ? "Enable sound" : "Mute sound"}
+            title={isMuted ? "Enable sound" : "Mute sound"}
+          >
+            {isMuted ? <VolumeX size={15} strokeWidth={1.5} /> : <Volume2 size={15} strokeWidth={1.5} />}
+            <span>{isMuted ? "Muted" : "Sound"}</span>
+          </button>
         </div>
       </header>
 
-      <section className="game-reading" aria-label="Arcana Match game board">
+      <section className="game-reading" aria-label="Mystery Deck game board">
         <div className="reading-rule reading-rule--top" aria-hidden="true"><span>✦</span></div>
-        <div className="tarot-grid">
+        <div
+          className="tarot-grid"
+          style={{ "--grid-columns": snapshot.difficulty.columns } as CSSProperties}
+        >
           {snapshot.cards.map((card) => (
             <TarotCard
               key={`${snapshot.roundId}-${card.id}`}
               card={card}
-              onSelect={() => game.selectCard(card.id)}
+              onSelect={() => selectCard(card.id)}
               isBlocked={isBlocked}
             />
           ))}
@@ -209,23 +354,33 @@ export default function GameCanvas() {
       </section>
 
       <section className="arcana-footer" aria-label="Game controls and guidance">
-        <p className="turn-instruction" aria-live="polite">{statusMessage(snapshot)}</p>
-        <button type="button" className="shuffle-button" onClick={() => game.restart()}>
-          <Sparkles size={14} strokeWidth={1.7} aria-hidden="true" />
-          Shuffle the deck
+        <p className="turn-instruction" aria-live="polite">{statusMessage(snapshot, remainingSeconds)}</p>
+        <button type="button" className="shuffle-button" onClick={() => layNewSpread()}>
+          <TimerReset size={14} strokeWidth={1.7} aria-hidden="true" />
+          Lay a new spread
         </button>
       </section>
 
       {isDemoRef.current && <p className="demo-label">Demonstration reading</p>}
 
-      {snapshot.phase === "complete" && (
+      {hasEnded && (
         <div className="completion-scrim" role="status" aria-live="assertive">
-          <section className="completion-card" aria-label="Reading complete">
+          <section className="completion-card" aria-label={snapshot.phase === "complete" ? "Reading complete" : "Time expired"}>
             <img src={LOGO_URL} alt="" className="completion-card__crest" />
-            <p className="completion-card__eyebrow">The constellation is complete</p>
-            <h2>{snapshot.moves} moves</h2>
-            <p>Every hidden arcana has found its twin. Begin another reading when you are ready.</p>
-            <button type="button" className="completion-card__action" onClick={() => game.restart()}>
+            <p className="completion-card__eyebrow">
+              {snapshot.phase === "complete" ? "The constellation is complete" : "The sandglass is empty"}
+            </p>
+            <h2>{snapshot.phase === "complete" ? `${snapshot.moves} moves` : `${snapshot.matchedPairs}/${snapshot.difficulty.pairs} pairs`}</h2>
+            <p>
+              {snapshot.phase === "complete"
+                ? "Every hidden card has found its twin before the final grain fell."
+                : "The reading closes for now. A fresh spread may reveal a faster pattern."}
+            </p>
+            {snapshot.phase === "complete" && isNewRecord && (
+              <p className="completion-card__record">New personal record · {formatTime(elapsedSeconds)}</p>
+            )}
+            <button type="button" className="completion-card__action" onClick={() => layNewSpread()}>
+              <Sparkles size={14} strokeWidth={1.7} aria-hidden="true" />
               Lay a new spread
             </button>
           </section>
