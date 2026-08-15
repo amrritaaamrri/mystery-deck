@@ -6,7 +6,7 @@ Because this is a project repository rather than a user-site repository, the pro
 
 The gameplay animation will be recorded from the fully styled demonstration reading. It will show the opening table, two card flips, and a confirmed pair. The finished GIF will be stored as a GitHub release asset and embedded in the README from that release URL, keeping the project source tree light while making the preview directly visible on the repository page.
 
-For GitHub Pages, the live game will use a self-contained visual fallback for the decorative tarot imagery while retaining the original generated imagery in the Manus preview. This avoids relying on platform-private media paths in the public static build.
+For GitHub Pages, the game uses self-contained ornamental CSS for the decorative tarot crest and card surfaces. This avoids relying on platform-private media paths in the public static build while keeping the preview and deployed version visually consistent.
 
 ## References
 

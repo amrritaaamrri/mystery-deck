@@ -35,12 +35,6 @@ import {
   type GameSnapshot,
 } from "@/game/types";
 
-const GITHUB_RELEASE_ASSET_ROOT =
-  "https://github.com/amrritaaamrri/mystery-deck/releases/download/portfolio-assets-v1";
-const LOGO_URL = `${GITHUB_RELEASE_ASSET_ROOT}/arcana-logo.png`;
-const CARD_BACK_URL = `${GITHUB_RELEASE_ASSET_ROOT}/arcana-tarot-back.png`;
-const CARD_FACES_URL = `${GITHUB_RELEASE_ASSET_ROOT}/arcana-tarot-faces.png`;
-
 const iconByArcana: Record<ArcanaName, LucideIcon> = {
   Moon,
   Sun,
@@ -73,7 +67,6 @@ function CardFace({ symbol }: { symbol: ArcanaSymbol }) {
   const artPosition = {
     "--art-x": symbol.artX,
     "--art-y": symbol.artY,
-    backgroundImage: `linear-gradient(rgba(250, 241, 215, 0.78), rgba(250, 241, 215, 0.9)), url(${CARD_FACES_URL})`,
   } as CSSProperties;
 
   return (
@@ -116,11 +109,7 @@ function TarotCard({
       aria-label={visible ? `${card.symbol.name}, revealed tarot card` : "Face-down tarot card"}
     >
       <span className="tarot-card__inner">
-        <span
-          className="tarot-card__surface tarot-card__back"
-          style={{ backgroundImage: `url(${CARD_BACK_URL})` }}
-          aria-hidden="true"
-        >
+        <span className="tarot-card__surface tarot-card__back" aria-hidden="true">
           <span className="tarot-card__back-seal">✦</span>
         </span>
         <CardFace symbol={card.symbol} />
@@ -268,7 +257,10 @@ export default function GameCanvas() {
       <header className="arcana-header">
         <div className="header-row">
           <div className="brand-bookplate">
-            <img src={LOGO_URL} alt="Mystery Deck crescent and star emblem" className="brand-bookplate__crest" />
+            <span className="brand-bookplate__crest crest-mark" aria-label="Mystery Deck crescent and star emblem">
+              <Moon strokeWidth={1.25} aria-hidden="true" />
+              <Sparkles strokeWidth={1.2} aria-hidden="true" />
+            </span>
             <div>
               <p className="brand-bookplate__kicker">A timed memory reading</p>
               <h1>Mystery Deck</h1>
@@ -368,7 +360,10 @@ export default function GameCanvas() {
       {hasEnded && (
         <div className="completion-scrim" role="status" aria-live="assertive">
           <section className="completion-card" aria-label={snapshot.phase === "complete" ? "Reading complete" : "Time expired"}>
-            <img src={LOGO_URL} alt="" className="completion-card__crest" />
+            <span className="completion-card__crest crest-mark" aria-hidden="true">
+              <Moon strokeWidth={1.25} />
+              <Sparkles strokeWidth={1.2} />
+            </span>
             <p className="completion-card__eyebrow">
               {snapshot.phase === "complete" ? "The constellation is complete" : "The sandglass is empty"}
             </p>
