@@ -16,4 +16,7 @@
 - [x] Add the gameplay GIF and live-demo link to the repository README.
 - [x] Add a GitHub Pages workflow that builds and deploys the game after each push to `main`.
 - [ ] Verify the repository workflow, Pages settings instructions, and expected recruiter-facing URL.
+- [ ] In GitHub repository settings, select GitHub Actions as the Pages publishing source, then confirm the first deployment URL.
+- [ ] Inspect the Pages workflow run, artifact, and site endpoint to identify and resolve the reported 404.
+- [ ] Confirm that the public GitHub Pages URL loads Mystery Deck and is ready to share with recruiters.
 - [x] Document the GitHub Pages base path, build artifact, and public preview-asset approach.
