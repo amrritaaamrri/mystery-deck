@@ -12,3 +12,8 @@
 - [x] Ensure the repository includes the complete client source, gameplay modules, style files, documentation, and project configuration for code browsing on GitHub.
 - [x] Export the final release to the user’s GitHub account and provide the repository URL.
 - [x] Create a `mystery-deck` repository in the GitHub account and authorize the project source upload.
+- [x] Capture and optimize a short gameplay GIF that clearly shows card flips and a successful match.
+- [x] Add the gameplay GIF and live-demo link to the repository README.
+- [x] Add a GitHub Pages workflow that builds and deploys the game after each push to `main`.
+- [ ] Verify the repository workflow, Pages settings instructions, and expected recruiter-facing URL.
+- [x] Document the GitHub Pages base path, build artifact, and public preview-asset approach.

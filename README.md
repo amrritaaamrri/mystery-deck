@@ -2,6 +2,16 @@
 
 **Mystery Deck** is a browser-based tarot memory game. Players turn two ornate cards at a time, discover matching pairs before the sandglass empties, and try to improve their personal record for each challenge tier.
 
+## Play online
+
+Once the first GitHub Pages workflow finishes, recruiters can play the game at **[amrritaaamrri.github.io/mystery-deck](https://amrritaaamrri.github.io/mystery-deck/)**.
+
+<p align="center">
+  <img src="https://github.com/amrritaaamrri/mystery-deck/releases/download/portfolio-assets-v1/mystery-deck-gameplay.gif" alt="Mystery Deck gameplay showing cards turning and a matched pair" width="960" />
+</p>
+
+> The preview above is a short demonstration reading: the player turns ornate tarot cards, reveals a pair, and continues before the sandglass runs out.
+
 ## Play modes
 
 | Reading | Board | Countdown | Intended challenge |
@@ -22,6 +32,17 @@ pnpm dev
 ```
 
 Run a type check with `pnpm check` and build the production version with `pnpm build`.
+
+## Deploy to GitHub Pages
+
+This repository includes `.github/workflows/deploy-pages.yml`, which builds the static game and publishes it after every push to `main`. In the repository, open **Settings → Pages** and select **GitHub Actions** as the publishing source. The initial workflow run creates the public site; later pushes update it automatically. This is the deployment approach documented for Vite projects hosted from a project repository. [1] [2]
+
+| Setting | Value |
+|---|---|
+| Live URL | `https://amrritaaamrri.github.io/mystery-deck/` |
+| Trigger | Push to `main` or a manual run from the Actions tab |
+| Build command | `pnpm run build:pages` |
+| Published directory | `dist/public` |
 
 ## Project map
 
@@ -44,3 +65,9 @@ Cards are native buttons with readable labels and visible keyboard focus. The ga
 ## License
 
 This project is released under the MIT license declared in `package.json`.
+
+## References
+
+[1] [Vite: Deploying a Static Site — GitHub Pages](https://vite.dev/guide/static-deploy)
+
+[2] [GitHub Docs: Using custom workflows with GitHub Pages](https://docs.github.com/en/pages/getting-started-with-github-pages/using-custom-workflows-with-github-pages)

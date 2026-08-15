@@ -35,9 +35,11 @@ import {
   type GameSnapshot,
 } from "@/game/types";
 
-const LOGO_URL = "/manus-storage/arcana-logo_f857af6e.png";
-const CARD_BACK_URL = "/manus-storage/arcana-tarot-back_d280492e.png";
-const CARD_FACES_URL = "/manus-storage/arcana-tarot-faces_4425e662.png";
+const GITHUB_RELEASE_ASSET_ROOT =
+  "https://github.com/amrritaaamrri/mystery-deck/releases/download/portfolio-assets-v1";
+const LOGO_URL = `${GITHUB_RELEASE_ASSET_ROOT}/arcana-logo.png`;
+const CARD_BACK_URL = `${GITHUB_RELEASE_ASSET_ROOT}/arcana-tarot-back.png`;
+const CARD_FACES_URL = `${GITHUB_RELEASE_ASSET_ROOT}/arcana-tarot-faces.png`;
 
 const iconByArcana: Record<ArcanaName, LucideIcon> = {
   Moon,
