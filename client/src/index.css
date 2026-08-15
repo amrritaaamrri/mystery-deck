@@ -1,177 +1,236 @@
+/**
+ * Arcana Match design contract: The Gilded Reliquary — oxblood velvet, parchment, Reliquary Gold,
+ * Art Nouveau ornament, and compact high-contrast ledger controls. Avoid pill UI and generic panels.
+ */
+
 @import "tailwindcss";
-@import "tw-animate-css";
-
-@custom-variant dark (&:is(.dark *));
-
-@theme inline {
-  --radius-sm: calc(var(--radius) - 4px);
-  --radius-md: calc(var(--radius) - 2px);
-  --radius-lg: var(--radius);
-  --radius-xl: calc(var(--radius) + 4px);
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --color-card: var(--card);
-  --color-card-foreground: var(--card-foreground);
-  --color-popover: var(--popover);
-  --color-popover-foreground: var(--popover-foreground);
-  --color-primary: var(--primary);
-  --color-primary-foreground: var(--primary-foreground);
-  --color-secondary: var(--secondary);
-  --color-secondary-foreground: var(--secondary-foreground);
-  --color-muted: var(--muted);
-  --color-muted-foreground: var(--muted-foreground);
-  --color-accent: var(--accent);
-  --color-accent-foreground: var(--accent-foreground);
-  --color-destructive: var(--destructive);
-  --color-destructive-foreground: var(--destructive-foreground);
-  --color-border: var(--border);
-  --color-input: var(--input);
-  --color-ring: var(--ring);
-  --color-chart-1: var(--chart-1);
-  --color-chart-2: var(--chart-2);
-  --color-chart-3: var(--chart-3);
-  --color-chart-4: var(--chart-4);
-  --color-chart-5: var(--chart-5);
-  --color-sidebar: var(--sidebar);
-  --color-sidebar-foreground: var(--sidebar-foreground);
-  --color-sidebar-primary: var(--sidebar-primary);
-  --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
-  --color-sidebar-accent: var(--sidebar-accent);
-  --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
-  --color-sidebar-border: var(--sidebar-border);
-  --color-sidebar-ring: var(--sidebar-ring);
-}
 
 :root {
-  --primary: var(--color-blue-700);
-  --primary-foreground: var(--color-blue-50);
-  --sidebar-primary: var(--color-blue-600);
-  --sidebar-primary-foreground: var(--color-blue-50);
-  --chart-1: var(--color-blue-300);
-  --chart-2: var(--color-blue-500);
-  --chart-3: var(--color-blue-600);
-  --chart-4: var(--color-blue-700);
-  --chart-5: var(--color-blue-800);
-  --radius: 0.65rem;
-  --background: oklch(1 0 0);
-  --foreground: oklch(0.235 0.015 65);
-  --card: oklch(1 0 0);
-  --card-foreground: oklch(0.235 0.015 65);
-  --popover: oklch(1 0 0);
-  --popover-foreground: oklch(0.235 0.015 65);
-  --secondary: oklch(0.98 0.001 286.375);
-  --secondary-foreground: oklch(0.4 0.015 65);
-  --muted: oklch(0.967 0.001 286.375);
-  --muted-foreground: oklch(0.552 0.016 285.938);
-  --accent: oklch(0.967 0.001 286.375);
-  --accent-foreground: oklch(0.141 0.005 285.823);
-  --destructive: oklch(0.577 0.245 27.325);
-  --destructive-foreground: oklch(0.985 0 0);
-  --border: oklch(0.92 0.004 286.32);
-  --input: oklch(0.92 0.004 286.32);
-  --ring: oklch(0.623 0.214 259.815);
-  --sidebar: oklch(0.985 0 0);
-  --sidebar-foreground: oklch(0.235 0.015 65);
-  --sidebar-accent: oklch(0.967 0.001 286.375);
-  --sidebar-accent-foreground: oklch(0.141 0.005 285.823);
-  --sidebar-border: oklch(0.92 0.004 286.32);
-  --sidebar-ring: oklch(0.623 0.214 259.815);
+  --velvet-ink: #13020a;
+  --velvet-dark: #2d0715;
+  --velvet: #560d27;
+  --velvet-light: #7f1d3d;
+  --gold: #c9a45b;
+  --gold-bright: #f0d997;
+  --gold-shadow: #6f4920;
+  --parchment: #f4ebcf;
+  --parchment-shadow: #d8c89a;
+  --ink: #22160d;
+  --ease-out: cubic-bezier(0.23, 1, 0.32, 1);
+  --ease-in-out: cubic-bezier(0.77, 0, 0.175, 1);
 }
 
-.dark {
-  --primary: var(--color-blue-700);
-  --primary-foreground: var(--color-blue-50);
-  --sidebar-primary: var(--color-blue-500);
-  --sidebar-primary-foreground: var(--color-blue-50);
-  --background: oklch(0.141 0.005 285.823);
-  --foreground: oklch(0.85 0.005 65);
-  --card: oklch(0.21 0.006 285.885);
-  --card-foreground: oklch(0.85 0.005 65);
-  --popover: oklch(0.21 0.006 285.885);
-  --popover-foreground: oklch(0.85 0.005 65);
-  --secondary: oklch(0.24 0.006 286.033);
-  --secondary-foreground: oklch(0.7 0.005 65);
-  --muted: oklch(0.274 0.006 286.033);
-  --muted-foreground: oklch(0.705 0.015 286.067);
-  --accent: oklch(0.274 0.006 286.033);
-  --accent-foreground:  oklch(0.92 0.005 65);
-  --destructive: oklch(0.704 0.191 22.216);
-  --destructive-foreground: oklch(0.985 0 0);
-  --border: oklch(1 0 0 / 10%);
-  --input: oklch(1 0 0 / 15%);
-  --ring: oklch(0.488 0.243 264.376);
-  --chart-1: var(--color-blue-300);
-  --chart-2: var(--color-blue-500);
-  --chart-3: var(--color-blue-600);
-  --chart-4: var(--color-blue-700);
-  --chart-5: var(--color-blue-800);
-  --sidebar: oklch(0.21 0.006 285.885);
-  --sidebar-foreground: oklch(0.85 0.005 65);
-  --sidebar-accent: oklch(0.274 0.006 286.033);
-  --sidebar-accent-foreground:  oklch(0.985 0 0);
-  --sidebar-border: oklch(1 0 0 / 10%);
-  --sidebar-ring: oklch(0.488 0.243 264.376);
+* { box-sizing: border-box; }
+
+html, body, #root { min-height: 100%; margin: 0; }
+
+body {
+  min-width: 320px;
+  overflow-x: hidden;
+  background: var(--velvet-ink);
+  color: var(--parchment);
+  font-family: "DM Mono", "Courier New", monospace;
 }
 
-@layer base {
-  * {
-    @apply border-border outline-ring/50;
-  }
-  body {
-    @apply bg-background text-foreground;
-  }
-  button:not(:disabled),
-  [role="button"]:not([aria-disabled="true"]),
-  [type="button"]:not(:disabled),
-  [type="submit"]:not(:disabled),
-  [type="reset"]:not(:disabled),
-  a[href],
-  select:not(:disabled),
-  input[type="checkbox"]:not(:disabled),
-  input[type="radio"]:not(:disabled) {
-    @apply cursor-pointer;
-  }
+button { font: inherit; }
+
+.arcana-shell {
+  position: relative;
+  isolation: isolate;
+  display: grid;
+  grid-template-rows: auto 1fr auto;
+  min-height: 100svh;
+  overflow: hidden;
+  padding: clamp(1.25rem, 3.4vw, 3.25rem) clamp(1rem, 6vw, 6.5rem) clamp(1rem, 2.8vw, 2.35rem);
+  background:
+    radial-gradient(circle at 50% 49%, rgba(177, 73, 100, 0.17), transparent 37%),
+    radial-gradient(ellipse at 50% 50%, transparent 30%, rgba(10, 0, 4, 0.38) 100%),
+    linear-gradient(125deg, rgba(28, 3, 12, 0.76), rgba(101, 13, 45, 0.26) 51%, rgba(24, 2, 11, 0.8));
 }
 
-@layer components {
-  /**
-   * Custom container utility that centers content and adds responsive padding.
-   *
-   * This overrides Tailwind's default container behavior to:
-   * - Auto-center content (mx-auto)
-   * - Add responsive horizontal padding
-   * - Set max-width for large screens
-   *
-   * Usage: <div className="container">...</div>
-   *
-   * For custom widths, use max-w-* utilities directly:
-   * <div className="max-w-6xl mx-auto px-4">...</div>
-   */
-  .container {
-    width: 100%;
-    margin-left: auto;
-    margin-right: auto;
-    padding-left: 1rem; /* 16px - mobile padding */
-    padding-right: 1rem;
-  }
+.arcana-canvas, .arcana-grain { position: fixed; inset: 0; pointer-events: none; }
+.arcana-canvas { z-index: -3; width: 100%; height: 100%; }
+.arcana-grain {
+  z-index: -2;
+  opacity: 0.43;
+  background-image:
+    radial-gradient(rgba(255,255,255,0.055) 0.55px, transparent 0.7px),
+    repeating-linear-gradient(104deg, rgba(255, 230, 186, 0.022) 0 1px, transparent 1px 4px),
+    repeating-radial-gradient(ellipse at 38% 58%, transparent 0 14px, rgba(245, 210, 163, 0.028) 15px 16px, transparent 17px 32px);
+  background-size: 5px 5px, 9px 9px, 88px 88px;
+  mix-blend-mode: screen;
+}
 
-  .flex {
-    min-height: 0;
-    min-width: 0;
-  }
+.arcana-header {
+  z-index: 2;
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 2rem;
+  padding-bottom: clamp(1.25rem, 2.5vw, 2.5rem);
+}
 
-  @media (min-width: 640px) {
-    .container {
-      padding-left: 1.5rem; /* 24px - tablet padding */
-      padding-right: 1.5rem;
-    }
-  }
+.brand-bookplate { display: flex; align-items: center; gap: 0.75rem; min-width: 0; }
+.brand-bookplate__crest { width: clamp(2.65rem, 5vw, 3.75rem); height: clamp(2.65rem, 5vw, 3.75rem); object-fit: contain; filter: drop-shadow(0 2px 5px rgba(0, 0, 0, 0.55)); }
+.brand-bookplate__kicker, .completion-card__eyebrow {
+  margin: 0 0 0.3rem;
+  color: rgba(240, 217, 151, 0.84);
+  font-size: 0.58rem;
+  font-weight: 500;
+  letter-spacing: 0.18em;
+  line-height: 1.25;
+  text-transform: uppercase;
+}
+.brand-bookplate h1 {
+  margin: 0;
+  color: var(--parchment);
+  font-family: "Cormorant Garamond", Georgia, serif;
+  font-size: clamp(1.8rem, 4.2vw, 3.25rem);
+  font-weight: 600;
+  letter-spacing: 0.07em;
+  line-height: 0.8;
+  text-transform: uppercase;
+  text-shadow: 0 2px 12px rgba(0, 0, 0, 0.55);
+}
 
-  @media (min-width: 1024px) {
-    .container {
-      padding-left: 2rem; /* 32px - desktop padding */
-      padding-right: 2rem;
-      max-width: 1280px; /* Standard content width */
-    }
-  }
+.score-ledger {
+  display: flex;
+  align-items: center;
+  gap: clamp(0.75rem, 2.2vw, 1.35rem);
+  margin-top: 0.15rem;
+  padding: 0.6rem 0.1rem 0.55rem 0.95rem;
+  border-top: 1px solid rgba(201, 164, 91, 0.62);
+  border-bottom: 1px solid rgba(201, 164, 91, 0.28);
+}
+.score-ledger__item { display: grid; gap: 0.11rem; min-width: 3.35rem; }
+.score-ledger__item span { color: rgba(244, 235, 207, 0.68); font-size: 0.56rem; letter-spacing: 0.14em; text-transform: uppercase; }
+.score-ledger__item strong { color: var(--gold-bright); font-family: "Cormorant Garamond", Georgia, serif; font-size: 1.55rem; font-weight: 600; letter-spacing: 0.06em; line-height: 0.9; }
+.score-ledger__item em { color: rgba(244, 235, 207, 0.68); font-family: "DM Mono", monospace; font-size: 0.58rem; font-style: normal; letter-spacing: 0; }
+.score-ledger__separator { width: 1px; height: 2.2rem; background: linear-gradient(transparent, rgba(201,164,91,0.8), transparent); }
+
+.game-reading {
+  z-index: 1;
+  align-self: center;
+  width: min(100%, 48rem);
+  margin: 0 auto;
+  padding: 0 clamp(0.2rem, 1vw, 0.8rem);
+}
+.reading-rule { display: flex; align-items: center; gap: 0.9rem; color: rgba(201, 164, 91, 0.75); font-size: 0.68rem; letter-spacing: 0.6em; }
+.reading-rule::before, .reading-rule::after { height: 1px; flex: 1; content: ""; background: linear-gradient(90deg, transparent, rgba(201, 164, 91, 0.72)); }
+.reading-rule::after { background: linear-gradient(90deg, rgba(201, 164, 91, 0.72), transparent); }
+.reading-rule--top { margin-bottom: clamp(0.9rem, 2.6vh, 1.7rem); }
+.reading-rule--bottom { margin-top: clamp(0.9rem, 2.6vh, 1.7rem); transform: rotate(180deg); }
+
+.tarot-grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: clamp(0.45rem, 1.7vw, 1rem);
+  perspective: 1200px;
+}
+.tarot-card {
+  position: relative;
+  aspect-ratio: 0.67;
+  min-width: 0;
+  padding: 0;
+  border: 0;
+  border-radius: 0.26rem;
+  background: transparent;
+  color: inherit;
+  cursor: pointer;
+  filter: drop-shadow(0 0.72rem 0.55rem rgba(10, 0, 4, 0.44));
+  transform: translateY(0);
+  transition: transform 180ms var(--ease-out), filter 180ms var(--ease-out);
+}
+.tarot-card:not(:disabled):hover { transform: translateY(-0.3rem) rotate(-0.35deg); filter: drop-shadow(0 0.95rem 0.78rem rgba(4, 0, 2, 0.65)); }
+.tarot-card:not(:disabled):active { transform: translateY(0) scale(0.97); }
+.tarot-card:focus-visible { outline: 2px solid var(--gold-bright); outline-offset: 4px; }
+.tarot-card:disabled { cursor: default; }
+.tarot-card__inner { position: absolute; inset: 0; display: block; transform-style: preserve-3d; transition: transform 520ms var(--ease-out); }
+.tarot-card.is-flipped .tarot-card__inner { transform: rotateY(180deg); }
+.tarot-card__surface {
+  position: absolute;
+  inset: 0;
+  display: block;
+  overflow: hidden;
+  border: 1px solid rgba(240, 217, 151, 0.78);
+  border-radius: 0.26rem;
+  backface-visibility: hidden;
+  background-color: var(--parchment);
+  box-shadow: inset 0 0 0 2px rgba(79, 15, 37, 0.75), inset 0 0 0 4px rgba(201,164,91,0.7);
+}
+.tarot-card__surface::after { position: absolute; inset: -30% -70%; content: ""; pointer-events: none; background: linear-gradient(108deg, transparent 43%, rgba(255, 239, 180, 0.05) 47%, rgba(255, 247, 210, 0.72) 50%, rgba(255, 239, 180, 0.04) 54%, transparent 58%); transform: translateX(-65%) rotate(5deg); }
+.tarot-card.is-flipped .tarot-card__front::after, .tarot-card.is-matched .tarot-card__front::after { animation: foil-sheen 880ms 230ms var(--ease-out) both; }
+.tarot-card__back { background-position: center; background-size: cover; }
+.tarot-card__back-seal { position: absolute; inset: 0; display: grid; place-items: center; color: rgba(255, 237, 179, 0.85); font-size: clamp(0.76rem, 2vw, 1.2rem); text-shadow: 0 0 10px rgba(255, 221, 129, 0.4); }
+.tarot-card__front { display: grid; place-items: center; padding: 0.5rem; color: var(--ink); background-position: center, var(--art-x) var(--art-y); background-repeat: no-repeat; background-size: cover, 400% 200%; transform: rotateY(180deg); }
+.tarot-card__frame { position: absolute; inset: 0.37rem; border: 1px solid rgba(125, 83, 31, 0.86); box-shadow: inset 0 0 0 2px rgba(254, 241, 195, 0.7), inset 0 0 0 3px rgba(125, 83, 31, 0.46); }
+.tarot-card__medallion { position: relative; z-index: 1; display: grid; width: 45%; aspect-ratio: 1; place-items: center; border: 1px solid rgba(118, 78, 27, 0.78); border-radius: 50%; color: #6f4920; background: rgba(253, 244, 215, 0.48); box-shadow: 0 0 0 3px rgba(201,164,91,0.23), inset 0 0 13px rgba(127, 86, 31, 0.12); }
+.tarot-card__medallion svg { width: 66%; height: 66%; }
+.tarot-card__name { position: absolute; z-index: 1; bottom: 20%; color: #4c2a16; font-family: "Cormorant Garamond", Georgia, serif; font-size: clamp(0.65rem, 1.8vw, 1rem); font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; }
+.tarot-card__flavor { position: absolute; z-index: 1; bottom: 12%; max-width: 75%; color: rgba(76,42,22,0.76); font-family: "Cormorant Garamond", Georgia, serif; font-size: clamp(0.42rem, 1vw, 0.57rem); font-style: italic; line-height: 1.1; text-align: center; }
+.tarot-card__corner { position: absolute; z-index: 1; left: 50%; color: rgba(111, 73, 32, 0.82); font-size: 0.54rem; transform: translateX(-50%); }
+.tarot-card__corner--top { top: 0.47rem; }
+.tarot-card__corner--bottom { bottom: 0.47rem; }
+.tarot-card.is-matched { transform: translateY(-0.18rem); filter: drop-shadow(0 0.65rem 1rem rgba(240, 202, 111, 0.3)); }
+.tarot-card.is-matched .tarot-card__front { box-shadow: inset 0 0 0 2px rgba(82, 19, 42, 0.75), inset 0 0 0 4px rgba(239,217,151,0.9), 0 0 0.9rem rgba(230, 182, 82, 0.32); }
+.tarot-card.is-mismatch { animation: gentle-nudge 250ms var(--ease-in-out) 180ms both; }
+
+.arcana-footer { z-index: 2; display: grid; grid-template-columns: 1fr auto 1fr; align-items: end; gap: 1rem; padding-top: clamp(1.1rem, 2.5vh, 2.25rem); }
+.turn-instruction { grid-column: 2; margin: 0; max-width: 23rem; color: rgba(244,235,207,0.78); font-family: "Cormorant Garamond", Georgia, serif; font-size: clamp(0.9rem, 1.8vw, 1.07rem); font-style: italic; line-height: 1.1; text-align: center; }
+.shuffle-button { grid-column: 3; justify-self: end; display: inline-flex; align-items: center; gap: 0.48rem; padding: 0.62rem 0.8rem; border: 1px solid rgba(201,164,91,0.72); border-radius: 0.2rem; color: var(--gold-bright); background: rgba(35, 4, 15, 0.36); box-shadow: inset 0 0 0 1px rgba(201,164,91,0.16); font-size: 0.62rem; letter-spacing: 0.1em; text-transform: uppercase; transition: color 160ms var(--ease-out), background 160ms var(--ease-out), transform 160ms var(--ease-out); }
+.shuffle-button:hover { color: #fff0c5; background: rgba(127, 29, 61, 0.62); }
+.shuffle-button:active { transform: scale(0.97); }
+.shuffle-button:focus-visible, .completion-card__action:focus-visible { outline: 2px solid #fff0c5; outline-offset: 3px; }
+.demo-label { position: fixed; right: 1.2rem; bottom: 1.1rem; margin: 0; color: rgba(244,235,207,0.46); font-size: 0.5rem; letter-spacing: 0.14em; text-transform: uppercase; }
+
+.completion-scrim { position: fixed; z-index: 7; inset: 0; display: grid; place-items: center; padding: 1.5rem; background: rgba(17, 1, 7, 0.5); backdrop-filter: blur(5px); }
+.completion-card { width: min(100%, 27rem); padding: 2.2rem clamp(1.5rem, 5vw, 3rem) 2rem; border: 1px solid rgba(240,217,151,0.83); border-radius: 0.34rem; color: var(--parchment); background: linear-gradient(145deg, rgba(85,13,39,0.98), rgba(37,5,19,0.99)); box-shadow: inset 0 0 0 4px rgba(201,164,91,0.14), 0 1.4rem 4rem rgba(0,0,0,0.45); text-align: center; animation: completion-arrive 420ms var(--ease-out) both; }
+.completion-card__crest { width: 4.5rem; height: 4.5rem; object-fit: contain; margin-bottom: 0.75rem; }
+.completion-card h2 { margin: 0.25rem 0 0.75rem; color: var(--gold-bright); font-family: "Cormorant Garamond", Georgia, serif; font-size: clamp(2.7rem, 8vw, 4.2rem); font-weight: 600; letter-spacing: 0.02em; line-height: 0.8; }
+.completion-card p:not(.completion-card__eyebrow) { margin: 0 auto 1.45rem; max-width: 22rem; color: rgba(244,235,207,0.82); font-family: "Cormorant Garamond", Georgia, serif; font-size: 1rem; line-height: 1.35; }
+.completion-card__action { padding: 0.72rem 1rem; border: 1px solid var(--gold); border-radius: 0.18rem; color: #2c110a; background: var(--gold-bright); box-shadow: inset 0 0 0 2px rgba(255, 247, 210, 0.58); font-size: 0.65rem; font-weight: 700; letter-spacing: 0.11em; text-transform: uppercase; transition: transform 160ms var(--ease-out), background 160ms var(--ease-out); }
+.completion-card__action:hover { background: #fff0c5; }
+.completion-card__action:active { transform: scale(0.97); }
+
+@keyframes foil-sheen { from { transform: translateX(-65%) rotate(5deg); } to { transform: translateX(65%) rotate(5deg); } }
+@keyframes gentle-nudge { 0%, 100% { transform: translateX(0); } 35% { transform: translateX(-0.12rem); } 70% { transform: translateX(0.1rem); } }
+@keyframes completion-arrive { from { opacity: 0; transform: translateY(0.65rem) scale(0.96); } to { opacity: 1; transform: translateY(0) scale(1); } }
+
+@media (max-width: 560px) {
+  .arcana-shell { padding: 1rem 0.8rem 1.1rem; }
+  .arcana-header { align-items: center; gap: 0.9rem; padding-bottom: 1.1rem; }
+  .brand-bookplate { gap: 0.45rem; }
+  .brand-bookplate__crest { width: 2.35rem; height: 2.35rem; }
+  .brand-bookplate__kicker { display: none; }
+  .brand-bookplate h1 { font-size: 1.42rem; letter-spacing: 0.05em; }
+  .score-ledger { gap: 0.55rem; padding-left: 0.45rem; }
+  .score-ledger__item { min-width: 2.6rem; }
+  .score-ledger__item strong { font-size: 1.22rem; }
+  .score-ledger__item span { font-size: 0.48rem; }
+  .score-ledger__separator { height: 1.7rem; }
+  .game-reading { width: min(100%, 31rem); padding: 0; }
+  .tarot-grid { gap: 0.36rem; }
+  .tarot-card__frame { inset: 0.23rem; }
+  .tarot-card__corner--top { top: 0.28rem; }
+  .tarot-card__corner--bottom { bottom: 0.28rem; }
+  .tarot-card__name { bottom: 18%; font-size: 0.55rem; }
+  .tarot-card__flavor { bottom: 9%; font-size: 0.4rem; }
+  .arcana-footer { grid-template-columns: 1fr; gap: 0.8rem; padding-top: 1.15rem; }
+  .turn-instruction, .shuffle-button { grid-column: 1; justify-self: center; }
+  .shuffle-button { order: -1; }
+}
+
+@media (max-height: 700px) and (min-width: 700px) {
+  .arcana-shell { padding-top: 1.05rem; padding-bottom: 0.85rem; }
+  .arcana-header { padding-bottom: 0.75rem; }
+  .brand-bookplate__crest { width: 2.45rem; height: 2.45rem; }
+  .brand-bookplate h1 { font-size: 1.75rem; }
+  .game-reading { width: min(100%, 38rem); }
+  .reading-rule--top { margin-bottom: 0.55rem; }
+  .reading-rule--bottom { margin-top: 0.55rem; }
+  .arcana-footer { padding-top: 0.8rem; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { scroll-behavior: auto !important; animation-duration: 0.001ms !important; animation-iteration-count: 1 !important; transition-duration: 0.001ms !important; }
 }
